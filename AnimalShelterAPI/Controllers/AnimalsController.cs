@@ -1,44 +1,57 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using AnimalShelterApi.Models;
 
 namespace AnimalShelterAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ValuesController : ControllerBase
+  [Route("api/[controller]")]
+  [ApiController]
+  public class AnimalsController : ControllerBase
+  {
+    private AnimalShelterAPIContext _db;
+
+    public AnimalsController(AnimalShelterAPIContext db)
     {
-        // GET api/values
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+      _db = db;
     }
+
+    // GET api/animals
+    [HttpGet]
+    public ActionResult<IEnumerable<Animal>> Get()
+    {
+      return _db.Animals.ToList();
+    }
+
+    [HttpGet("{id}")]
+    public ActionResult<Animal> Get(int id)
+    {
+        return _db.Animals.FirstOrDefault(entry => entry.AnimalId == id);
+    }
+
+    [HttpPut("{id}")]
+    public void Put(int id, [FromBody] Animal animal)
+    {
+      animal.AnimalId = id;
+      _db.Entry(animal).State = EntityState.Modified;
+      _db.SaveChanges();
+    }
+
+    [HttpDelete("{id}")]
+    public void Delete(int id)
+    {
+      var animalToDelete = _db.Animals.FirstOrDefault(entry => entry.AnimalId == id);
+      _db.Animals.Remove(animalToDelete);
+      _db.SaveChanges();
+    }
+
+    // POST api/animals
+    [HttpPost]
+    public void Post([FromBody] Animal animal)
+    {
+      _db.Animals.Add(animal);
+      _db.SaveChanges();
+    }
+  }
 }
