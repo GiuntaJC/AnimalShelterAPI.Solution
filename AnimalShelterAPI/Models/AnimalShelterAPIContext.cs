@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace AnimalShelterAPI.Models
+namespace AnimalShelterApi.Models
 {
 	public class AnimalShelterAPIContext : DbContext
 	{
