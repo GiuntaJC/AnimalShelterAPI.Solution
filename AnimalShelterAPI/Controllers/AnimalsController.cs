@@ -33,7 +33,7 @@ namespace AnimalShelterAPI.Controllers
         query = query.Where(entry => entry.Gender == gender);
       }
 
-      if(age != null)
+      if(age != 0)
       {
         query = query.Where(entry => entry.Age == age);
       }
